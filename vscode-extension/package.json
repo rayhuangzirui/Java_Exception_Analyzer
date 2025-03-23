@@ -1,0 +1,24 @@
+{
+  "name": "vscode-extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "out/Extension.js",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "engines": {
+    "vscode": "^1.98.0"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/vscode": "^1.98.0",
+    "typescript": "^5.8.2"
+  }
+}
