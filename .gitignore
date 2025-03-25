@@ -1,8 +1,9 @@
 **/.idea
+**/.vscode
 *.iml
 *.ipr
 *.iws
-**/node_modules
 
-out/*
-gen/*
+**/node_modules
+**/out
+**/gen

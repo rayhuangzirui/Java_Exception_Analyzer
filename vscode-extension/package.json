@@ -1,0 +1,39 @@
+{
+  "name": "vscode-extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "out/Extension.js",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "engines": {
+    "vscode": "^1.98.0"
+  },
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "vscode-extension.sayHello",
+        "title": "Hello World"
+      },
+      {
+        "command": "vscode-extension.underlineText",
+        "title": "underline"
+      },
+      {
+        "command": "vscode-extension.asdf",
+        "title": "asdf"
+      }
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.13.13",
+    "@types/vscode": "^1.98.0",
+    "typescript": "^5.8.2"
+  }
+}
