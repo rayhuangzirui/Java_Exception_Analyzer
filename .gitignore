@@ -2,6 +2,7 @@
 *.iml
 *.ipr
 *.iws
+**/node_modules
 
 out/*
 gen/*
