@@ -36,7 +36,7 @@ export function applyUnderline(hoverInfo: HoverInfo) {
 }
 
 export function applyHover(hoverInfo: HoverInfo) {
-  vscode.languages.registerHoverProvider('javascript', {
+  vscode.languages.registerHoverProvider('java', {
     provideHover(document, position, token) {
         for (const range of hoverInfo.ranges) {
             const start = new vscode.Position(range.start.line, range.start.character);
