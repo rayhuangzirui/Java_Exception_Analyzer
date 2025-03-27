@@ -19,9 +19,9 @@ import static org.junit.Assert.assertEquals;
 public class EmptyCatchTest {
     @Test
     public void detectsSimpleEmptyCatch(){
-        // Get code from resources/sample-java/EmptyCatchExample.java by replacing the path
+        // Get errorCode from resources/sample-java/EmptyCatchExample.java by replacing the path
         String path = "../resources/sample-java/EmptyCatchExample.java";
-        // Get the code from the file
+        // Get the errorCode from the file
         try {
             String code = Files.readString(Path.of(path));
             System.out.println("Code: " + code);
@@ -30,13 +30,14 @@ public class EmptyCatchTest {
             List<AnalysisResult> results = analyze(cc);
 
             assertEquals(1, results.size());
-            assertEquals("EMPTY_CATCH", results.get(0).code());
+            assertEquals("EMPTY_CATCH", results.get(0).errorCode());
             assertEquals(5, results.get(0).line());
             assertEquals("Empty catch block found", results.get(0).message());
+            assertEquals(cc, results.get(0).node());
             assertEquals("Add proper handling of the exception:\n" +
                     "- Log the exception\n" +
                     "- Add a comment explaining why the exception is ignored\n" +
-                    "- Refactor the code to handle the exception\n" +
+                    "- Refactor the errorCode to handle the exception\n" +
                     "- Remove the empty catch block if the exception is not needed\n", results.get(0).suggestion());
             assertEquals("HIGH", results.get(0).riskLevel().toString());
         } catch (IOException e) {

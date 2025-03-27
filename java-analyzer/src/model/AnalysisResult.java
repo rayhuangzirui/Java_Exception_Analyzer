@@ -2,7 +2,7 @@ package model;
 import com.github.javaparser.ast.Node;
 import com.google.gson.Gson;
 
-public record AnalysisResult(String code, Node node, int line, String message, String suggestion, RiskLevel riskLevel) {
+public record AnalysisResult(String errorCode, Node node, int line, String message, String suggestion, RiskLevel riskLevel) {
     private static final Gson gson = new Gson();
 
     public String toJson() {
