@@ -39,6 +39,29 @@ public class UnclosedResourceTest {
     }
 
     @Test
+    public void detectsUnclosedResourceFileWriter() {
+        String code = """
+            public class Example {
+                public void exampleMethod() throws Exception {
+                    FileWriter fr = new FileWriter("file.txt");
+                    try {
+                        int data = fis.read();
+                    } catch (Exception e) {
+                        //
+                    }
+                }
+            }
+            """;
+
+        MethodDeclaration method = getFirstMethod(code);
+        List<AnalysisResult> results = analyze(method);
+
+        assertEquals(1, results.size());
+        assertEquals("UNCLOSED_RESOURCE", results.get(0).errorCode());
+        assertTrue(results.get(0).message().contains("Resource not properly closed"));
+    }
+
+    @Test
     public void testProperlyClosedResource() {
         String code = """
             public class Example {
