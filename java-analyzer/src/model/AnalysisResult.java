@@ -1,7 +1,8 @@
 package model;
+import com.github.javaparser.ast.Node;
 import com.google.gson.Gson;
 
-public record AnalysisResult(String code, int line, String message, String suggestion, RiskLevel riskLevel) {
+public record AnalysisResult(String code, Node node, int line, String message, String suggestion, RiskLevel riskLevel) {
     private static final Gson gson = new Gson();
 
     public String toJson() {
@@ -11,6 +12,7 @@ public record AnalysisResult(String code, int line, String message, String sugge
     public static class AnalysisResultBuilder {
         private String code;
         private int line;
+        private Node node;
         private String message;
         private String suggestion;
         private RiskLevel riskLevel;
@@ -22,6 +24,11 @@ public record AnalysisResult(String code, int line, String message, String sugge
 
         public AnalysisResultBuilder setLine(int line) {
             this.line = line;
+            return this;
+        }
+
+        public AnalysisResultBuilder setNode(Node node) {
+            this.node = node;
             return this;
         }
 
@@ -41,7 +48,7 @@ public record AnalysisResult(String code, int line, String message, String sugge
         }
 
         public AnalysisResult build() {
-            return new AnalysisResult(code, line, message, suggestion, riskLevel);
+            return new AnalysisResult(code, node, line, message, suggestion, riskLevel);
         }
     }
 }
