@@ -13,9 +13,9 @@ public abstract class BaseAnalyzer extends VoidVisitorAdapter<List<AnalysisResul
         return node.getRange().map(range -> range.begin.line).orElse(-1);
     }
 
-    protected void addAnalysisResult(List<AnalysisResult> results, String code, Node node, String message, String suggestion, RiskLevel riskLevel) {
+    protected void addAnalysisResult(List<AnalysisResult> results, String errorCode, Node node, String message, String suggestion, RiskLevel riskLevel) {
         int line = getLineOfCode(node);
-        results.add(new AnalysisResult(code, node, line, message, suggestion, riskLevel));
+        results.add(new AnalysisResult(errorCode, node, line, message, suggestion, riskLevel));
     }
 
     @Override

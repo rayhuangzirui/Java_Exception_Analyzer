@@ -8,7 +8,7 @@ import java.util.List;
 /* Identify empty catch exception blocks
 * Example violation:
 * try {
-*    // code that may throw an exception
+*    // errorCode that may throw an exception
 * } catch (Exception e) {
 *   // empty catch block
 * }
