@@ -37,7 +37,7 @@ public class EmptyCatchTest {
             assertEquals("Add proper handling of the exception:\n" +
                     "- Log the exception\n" +
                     "- Add a comment explaining why the exception is ignored\n" +
-                    "- Refactor the errorCode to handle the exception\n" +
+                    "- Refactor the code to handle the exception\n" +
                     "- Remove the empty catch block if the exception is not needed\n", results.get(0).suggestion());
             assertEquals("HIGH", results.get(0).riskLevel().toString());
         } catch (IOException e) {
