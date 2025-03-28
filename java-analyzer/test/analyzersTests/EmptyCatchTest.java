@@ -31,7 +31,7 @@ public class EmptyCatchTest {
 
             assertEquals(1, results.size());
             assertEquals("EMPTY_CATCH", results.get(0).errorCode());
-            assertEquals(5, results.get(0).line());
+            assertEquals(5, results.get(0).startLine());
             assertEquals("Empty catch block found", results.get(0).message());
             assertEquals(cc, results.get(0).node());
             assertEquals("Add proper handling of the exception:\n" +
