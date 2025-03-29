@@ -18,10 +18,8 @@ import static org.junit.Assert.assertEquals;
 
 public class AlwaysTriggeredCatchTest {
     @Test
-    public void detectsFileNotFound() {
-        // Get errorCode from resources/sample-java/EmptyCatchExample.java by replacing the path
+    public void detectedAlwaysTriggeredCatch() {
         String path = "../resources/sample-java/AlwaysTriggeredCatchExample1.java";
-        // Get the errorCode from the file
         try {
             String code = Files.readString(Path.of(path));
             System.out.println("Code: " + code);
@@ -37,6 +35,21 @@ public class AlwaysTriggeredCatchTest {
             assertEquals(cc, results.getFirst().node());
             assertEquals(AlwaysTriggeredCatch.SUGGESTION, results.getFirst().suggestion());
             assertEquals("HIGH", results.getFirst().riskLevel().toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void errorWithConditionShouldNotBeDetected() {
+        String path = "../resources/sample-java/AlwaysTriggeredCatchExample2.java";
+        try {
+            String code = Files.readString(Path.of(path));
+            System.out.println("Code: " + code);
+            CompilationUnit cu = StaticJavaParser.parse(code);
+            List<AnalysisResult> results = analyze(cu);
+
+            assertEquals(0, results.size());
         } catch (IOException e) {
             e.printStackTrace();
         }

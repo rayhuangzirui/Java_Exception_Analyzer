@@ -19,9 +19,7 @@ import static org.junit.Assert.assertEquals;
 public class RedundantCatchTest {
     @Test
     public void detectsFileNotFound() {
-        // Get errorCode from resources/sample-java/EmptyCatchExample.java by replacing the path
         String path = "../resources/sample-java/RedundantCatchExample.java";
-        // Get the errorCode from the file
         try {
             String code = Files.readString(Path.of(path));
             System.out.println("Code: " + code);
