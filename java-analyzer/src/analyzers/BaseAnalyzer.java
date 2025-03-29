@@ -1,7 +1,5 @@
 package analyzers;
 
-import com.github.javaparser.ast.stmt.ThrowStmt;
-import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import model.AnalysisResult;
 import model.RiskLevel;
@@ -20,12 +18,4 @@ public abstract class BaseAnalyzer extends VoidVisitorAdapter<List<AnalysisResul
         int endChar = node.getRange().map(range -> range.end.column).orElse(-1);
         results.add(new AnalysisResult(errorCode, node, startLine, endLine, startChar, endChar, message, suggestion, riskLevel));
     }
-
-    @Override
-    public void visit(TryStmt tryStmt, List<AnalysisResult> results) {
-        // Visit try statement with try block, catch clauses and finally block
-    }
-
-    @Override
-    public void visit(ThrowStmt throwStmt, List<AnalysisResult> results) {}
 }
