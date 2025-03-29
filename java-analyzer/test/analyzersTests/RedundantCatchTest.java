@@ -25,9 +25,10 @@ public class RedundantCatchTest {
         try {
             String code = Files.readString(Path.of(path));
             System.out.println("Code: " + code);
-            CatchClause cc = getFirstCatchClause(code);
+            CompilationUnit cu = StaticJavaParser.parse(code);
+            CatchClause cc = getFirstCatchClause(cu);
             System.out.println("Issue: " + cc);
-            List<AnalysisResult> results = analyze(cc);
+            List<AnalysisResult> results = analyze(cu);
 
             assertEquals(1, results.size());
             assertEquals(RedundantTryCatch.ERROR_CODE, results.getFirst().errorCode());
@@ -41,16 +42,16 @@ public class RedundantCatchTest {
         }
     }
 
-    private CatchClause getFirstCatchClause(String code) {
-        CompilationUnit cu = StaticJavaParser.parse(code);
+    private CatchClause getFirstCatchClause(CompilationUnit cu) {
+
         Optional<CatchClause> catchClause = cu.findFirst(CatchClause.class);
         return catchClause.orElseThrow();
     }
 
-    private List<AnalysisResult> analyze(CatchClause cc) {
+    private List<AnalysisResult> analyze(CompilationUnit cu) {
         RedundantTryCatch analyzer = new RedundantTryCatch();
         List<AnalysisResult> results = new ArrayList<>();
-        analyzer.visit(cc, results);
+        analyzer.visit(cu, results);
         return results;
     }
 }
