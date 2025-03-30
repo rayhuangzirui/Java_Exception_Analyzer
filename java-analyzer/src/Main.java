@@ -1,6 +1,55 @@
+import analyzers.*;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import model.AnalysisResult;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
-        System.out.println("Hello, World!");
+        try {
+            String filePath = "resources/sample-java/EmptyCatchExample.java";
+            File file = new File(filePath);
+            CompilationUnit cu = StaticJavaParser.parse(file);
+            List<AnalysisResult> results = getAnalysisResults(cu);
+
+            Path outputPath = Path.of("output.json");
+            if (results.isEmpty()) {
+                System.out.println("No issues found.");
+            } else {
+                System.out.println("Issues found. Check output.json for details.");
+                System.out.println(AnalysisResult.toJsonArray(results));
+            }
+            try (FileWriter writer = new FileWriter(outputPath.toFile())) {
+                writer.write(AnalysisResult.toJsonArray(results));
+            }
+        } catch (Exception e) {
+            System.err.println("Analysis failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private static List<AnalysisResult> getAnalysisResults(CompilationUnit cu) {
+        List<AnalysisResult> results = new ArrayList<>();
+        List<BaseAnalyzer> analyzers = List.of(
+                new EmptyCatch(),
+                new UnclosedResource(),
+                new UndeclaredException(),
+                new UnhandledException(),
+                new LoopTryCatch(),
+                new RedundantTryCatch(),
+                new ExceptionPropagation(),
+                new AlwaysTriggeredCatch(),
+                new SystemErrorInCatch()
+        );
+
+        analyzers.forEach(analyzer -> analyzer.analyze(cu, results));
+        return results;
     }
 }
