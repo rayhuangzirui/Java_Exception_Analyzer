@@ -3,24 +3,32 @@
 import * as vscode from "vscode";
 import { ExtensionContext } from "vscode";
 import { applyHover, applyUnderline } from "./Highlight";
-import { mockHoverInfo } from "./resources/mockHoverInfo";
+import { AnalysisResult } from "./interfaces/HoverInfo";
+import { parseAnalysisResults } from "./interfaces/ParseAnalysisResult";
+import path = require("path");
 
 export function activate(context: ExtensionContext) {
-  sayHello(context);
-  underline(context);
+  registerHello(context);
+
+  const filePath = path.join(context.extensionPath, "..", "resources", "analysis-output", "output.json");
+  const analysisResults = parseAnalysisResults(filePath);
+
+  registerUnderline(context, analysisResults);
 }
 
-export function sayHello(context: ExtensionContext) {
+export function registerHello(context: ExtensionContext) {
   let disposable = vscode.commands.registerCommand("vscode-extension.sayHello", () => {
     vscode.window.showInformationMessage("Is this compiling? 2");
   });
   context.subscriptions.push(disposable);
 }
 
-export function underline(context: ExtensionContext) {
+export function registerUnderline(context: ExtensionContext, analysisResults: AnalysisResult[]) {
   let disposable = vscode.commands.registerCommand("vscode-extension.underlineText", () => {
-    applyUnderline(mockHoverInfo);
-    applyHover(mockHoverInfo);
+    for (const analysisResult of analysisResults) {
+      applyUnderline(analysisResult);
+      applyHover(analysisResult);
+    }
   });
 
   context.subscriptions.push(disposable);

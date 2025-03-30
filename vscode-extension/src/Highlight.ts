@@ -1,33 +1,28 @@
 import * as vscode from "vscode";
-import { HoverInfo, Severity } from "./interfaces/HoverInfo";
+import { AnalysisResult, RiskLevel } from "./interfaces/HoverInfo";
 
-function severityToColor(severity: Severity): string {
-  switch (severity) {
-    case Severity.Error:
+function severityToColor(riskLevel: RiskLevel): string {
+  switch (riskLevel) {
+    case RiskLevel.HIGH:
       return "red";
-    case Severity.Warning:
+    case RiskLevel.MEDIUM:
       return "yellow";
-    case Severity.Information:
-      return "grey";
-    case Severity.Hint:
+    case RiskLevel.LOW:
       return "#5b8beb";
   }
-
 }
 
-export function applyUnderline(hoverInfo: HoverInfo) {
+export function applyUnderline(hoverInfo: AnalysisResult) {
   let decorations: vscode.DecorationOptions[] = [];
-  const color = severityToColor(hoverInfo.severity)
+  const color = severityToColor(hoverInfo.riskLevel);
   const underlineDecoration = vscode.window.createTextEditorDecorationType({
     textDecoration: `underline wavy ${color}`,
   });
 
-  hoverInfo.ranges.forEach((range) => {
-    const start = new vscode.Position(range.start.line, range.start.character);
-    const end = new vscode.Position(range.end.line, range.end.character);
-    const decoration = { range: new vscode.Range(start, end) };
-    decorations.push(decoration);
-  });
+  const start = new vscode.Position(hoverInfo.startLine, hoverInfo.startChar);
+  const end = new vscode.Position(hoverInfo.endLine, hoverInfo.endChar);
+  const decoration = { range: new vscode.Range(start, end) };
+  decorations.push(decoration);
 
   const editor = vscode.window.activeTextEditor;
   if (editor) {
@@ -35,18 +30,15 @@ export function applyUnderline(hoverInfo: HoverInfo) {
   }
 }
 
-export function applyHover(hoverInfo: HoverInfo) {
-  vscode.languages.registerHoverProvider('java', {
+export function applyHover(hoverInfo: AnalysisResult) {
+  vscode.languages.registerHoverProvider("java", {
     provideHover(document, position, token) {
-        for (const range of hoverInfo.ranges) {
-            const start = new vscode.Position(range.start.line, range.start.character);
-            const end = new vscode.Position(range.end.line, range.end.character);
-            const vscodeRange = new vscode.Range(start, end);
-
-            if (vscodeRange.contains(position)) {
-                return new vscode.Hover(hoverInfo.hoverMessage);
-            }
-        }
-    }
-});
+      const start = new vscode.Position(hoverInfo.startLine, hoverInfo.startChar);
+      const end = new vscode.Position(hoverInfo.endLine, hoverInfo.endChar);
+      const vscodeRange = new vscode.Range(start, end);
+      if (vscodeRange.contains(position)) {
+        return new vscode.Hover(hoverInfo.message, vscodeRange);
+      }
+    },
+  });
 }
