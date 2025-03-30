@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class SystemErrorInCatchTest {
 
@@ -30,10 +31,10 @@ public class SystemErrorInCatchTest {
             // expect analysis result flagged.
             assertEquals(1, results.size());
             AnalysisResult result = results.get(0);
-            assertEquals("SYS_ERR_IN_CATCH", result.code());
+            assertEquals("SYS_ERR_IN_CATCH", result.errorCode());
             assertEquals("Catch block uses System.err or printStackTrace for error handling", result.message());
             assertEquals("Consider replacing System.err output or printStackTrace() with a proper logging framework,\n" +
-                    "or handling the exception in a way that recovers or propagates the error appropriately.", result.suggestion());
+                    "or handling the exception in a way that recovers or propagates the error appropriately.\n", result.suggestion());
             assertEquals(RiskLevel.MEDIUM, result.riskLevel());
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,7 +51,7 @@ public class SystemErrorInCatchTest {
 
             // we check that none of the results have the "SYS_ERR_IN_CATCH" error code.
             boolean systemErrorFlagPresent = results.stream()
-                    .anyMatch(result -> result.code().equals("SYS_ERR_IN_CATCH"));
+                    .anyMatch(result -> result.errorCode().equals("SYS_ERR_IN_CATCH"));
             assertFalse("SystemErrorInCatch flag should not be present", systemErrorFlagPresent);
         } catch (IOException e) {
             e.printStackTrace();
