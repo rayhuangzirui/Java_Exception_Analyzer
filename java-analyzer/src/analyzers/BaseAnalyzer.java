@@ -1,5 +1,6 @@
 package analyzers;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import model.AnalysisResult;
 import model.RiskLevel;
@@ -17,5 +18,9 @@ public abstract class BaseAnalyzer extends VoidVisitorAdapter<List<AnalysisResul
         int startChar = node.getRange().map(range -> range.begin.column).orElse(-1);
         int endChar = node.getRange().map(range -> range.end.column).orElse(-1);
         results.add(new AnalysisResult(errorCode, node, startLine, endLine, startChar, endChar, message, suggestion, riskLevel));
+    }
+
+    public void analyze(CompilationUnit cu, List<AnalysisResult> results) {
+        cu.accept(this, results);
     }
 }

@@ -1,4 +1,4 @@
 package analyzers;
 
-public class AlwaysTriggeredCatch {
+public class AlwaysTriggeredCatch extends BaseAnalyzer {
 }
