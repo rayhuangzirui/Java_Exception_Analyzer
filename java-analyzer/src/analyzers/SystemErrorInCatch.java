@@ -10,7 +10,7 @@ import java.util.List;
 // try{...}catch(Error e){System.err.print(e)}
 // try{...}catch(Error e){printStackTrace(e)}
 
-public class SystemErrorInCatch {
+public class SystemErrorInCatch extends BaseAnalyzer {
 
     private static final String ERROR_CODE = "SYS_ERR_IN_CATCH";
     private static final String ERROR_MESSAGE = "Catch block uses System.err or printStackTrace for error handling";

@@ -1,6 +1,13 @@
 package analyzers;
 
-public class LoopTryCatch {
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.stmt.*;
+import model.AnalysisResult;
+import model.RiskLevel;
+
+import java.util.List;
+
+public class LoopTryCatch extends BaseAnalyzer {
     // Preventing expensive exception-based control flow
     private static final String ERROR_CODE = "LOOP_TRY_CATCH";
     private static final String ERROR_MESSAGE = "Try-catch block inside a loop detected";
@@ -27,7 +34,7 @@ public class LoopTryCatch {
      * @param node The node to start checking from
      * @return true if the node is inside a loop; false otherwise.
      */
-    private boolean isWithinLoop(Node node) {
+    private boolean isWithinLoop(TryStmt node) {
         Node current = node;
         while (current.getParentNode().isPresent()) {
             current = current.getParentNode().get();

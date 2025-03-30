@@ -14,24 +14,9 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
-package analyzersTests;
-
-import analyzers.LoopTryCatch;
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.stmt.TryStmt;
-import model.AnalysisResult;
-import model.RiskLevel;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.Assert.assertEquals;
 
 public class LoopTryCatchTest {
 
@@ -46,7 +31,7 @@ public class LoopTryCatchTest {
             // expect analysis result for a try catch block inside a loop.
             assertEquals(1, results.size());
             AnalysisResult result = results.get(0);
-            assertEquals("LOOP_TRY_CATCH", result.code());
+            assertEquals("LOOP_TRY_CATCH", result.errorCode());
             assertEquals("Try-catch block inside a loop detected", result.message());
             assertEquals(RiskLevel.MEDIUM, result.riskLevel());
         } catch (IOException e) {
