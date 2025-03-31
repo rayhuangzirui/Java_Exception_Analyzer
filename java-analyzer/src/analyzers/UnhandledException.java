@@ -100,6 +100,7 @@ public class UnhandledException extends BaseAnalyzer {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     private boolean isWithinTryBlock(MethodCallExpr methodCall) {
         // check if the method has an ancestor that has a trystmt
         return methodCall.findAncestor(TryStmt.class).isPresent();
