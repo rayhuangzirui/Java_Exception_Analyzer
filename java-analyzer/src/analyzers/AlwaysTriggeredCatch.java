@@ -15,7 +15,7 @@ public class AlwaysTriggeredCatch extends BaseAnalyzer {
     public static final RiskLevel RISK_LEVEL = RiskLevel.HIGH;
 
     private final Set<String> alwaysThrowingMethods = new HashSet<>();
-    private final Map<String, List<String>> methodCallGraph = new HashMap<>();
+    private final Map<String, Set<String>> methodCallGraph = new HashMap<>();
 
     @Override
     public void visit(MethodDeclaration method, List<AnalysisResult> results) {
@@ -23,7 +23,7 @@ public class AlwaysTriggeredCatch extends BaseAnalyzer {
         String methodName = method.getNameAsString();
 
         // Track method calls inside this method. If there is an unconditional method call, add it to the graph.
-        methodCallGraph.putIfAbsent(methodName, new ArrayList<>());
+        methodCallGraph.putIfAbsent(methodName, new HashSet<>());
         if (hasUnconditionalMethodCall(method)) {
             method.findAll(MethodCallExpr.class).forEach(call -> methodCallGraph.get(methodName).add(call.getNameAsString()));
         }
