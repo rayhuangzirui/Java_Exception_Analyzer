@@ -14,7 +14,12 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         try {
-            String filePath = "resources/sample-java/EmptyCatchExample.java";
+//            String filePath = "resources/sample-java/EmptyCatchExample.java";
+            if (args.length < 1) {
+                System.err.println("Please provide the path to the Java file to analyze.");
+                return;
+            }
+            String filePath = args[0];
             File file = new File(filePath);
             CompilationUnit cu = StaticJavaParser.parse(file);
             List<AnalysisResult> results = getAnalysisResults(cu);

@@ -13,12 +13,12 @@ public class UndeclaredException extends BaseAnalyzer {
     private static final String ERROR_MESSAGE = "Exception thrown is not declared in signature";
     private static final String SUGGESTION = """
             Consider to either:
-            - add the exception to method sigature 
-            - catch the exception in try-catch 
-            """;
+            - add the exception to method signature\s
+            - catch the exception in try-catch\s
+           \s""";
     private static final RiskLevel RISK_LEVEL = RiskLevel.MEDIUM;
 
-    // Uncheked Exceptions don't need to bbe declared
+    // Unchecked Exceptions don't need to bbe declared
     private static final Set<String> UNCHECKED_EXCEPTIONS = Set.of(
             "RuntimeException", "ArithmeticException", "ArrayStoreException", "ClassCastException",
             "IllegalArgumentException", "IllegalStateException", "IndexOutOfBoundsException",
@@ -57,6 +57,7 @@ public class UndeclaredException extends BaseAnalyzer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(ThrowStmt throwStmt, List<AnalysisResult> results) {
         super.visit(throwStmt, results);
 
