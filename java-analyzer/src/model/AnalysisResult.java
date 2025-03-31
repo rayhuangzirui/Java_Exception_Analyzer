@@ -1,13 +1,32 @@
 package model;
 import com.github.javaparser.ast.Node;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.List;
 
 public record AnalysisResult(String errorCode, Node node, int startLine, int endLine, int startChar,
                              int endChar, String message, String suggestion, RiskLevel riskLevel) {
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
+        // Exclude the Node class from serialization
+        @Override
+        public boolean shouldSkipField(FieldAttributes f) {
+            return f.getDeclaringClass() == Node.class;
+        }
 
-    public String toJson() {
-        return gson.toJson(this);
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return false;
+        }
+    }).create();
+
+    public static String toJsonArray(List<AnalysisResult> results) {
+        if (results == null || results.isEmpty()) {
+            return "[]";
+        }
+        return gson.toJson(results);
     }
 
     public static class AnalysisResultBuilder {
