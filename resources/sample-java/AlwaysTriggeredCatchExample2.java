@@ -14,8 +14,7 @@ public class AlwaysTriggeredCatchExample2 {
         alwaysThrowsException();
     }
 
-
-    public void redundantTryCatch() {
+    public void alwaysThrowCatch() {
         try {
             indirectlyThrows();  // This will not throw an exception
         } catch (IOException e) {

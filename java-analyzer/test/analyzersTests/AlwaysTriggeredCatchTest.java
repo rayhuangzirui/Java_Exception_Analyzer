@@ -41,8 +41,23 @@ public class AlwaysTriggeredCatchTest {
     }
 
     @Test
-    public void errorWithConditionShouldNotBeDetected() {
+    public void errorWithConditionShouldNotBeDetected1() {
         String path = "../resources/sample-java/AlwaysTriggeredCatchExample2.java";
+        try {
+            String code = Files.readString(Path.of(path));
+            System.out.println("Code: " + code);
+            CompilationUnit cu = StaticJavaParser.parse(code);
+            List<AnalysisResult> results = analyze(cu);
+
+            assertEquals(0, results.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void errorWithConditionShouldNotBeDetected2() {
+        String path = "../resources/sample-java/AlwaysTriggeredCatchExample3.java";
         try {
             String code = Files.readString(Path.of(path));
             System.out.println("Code: " + code);
