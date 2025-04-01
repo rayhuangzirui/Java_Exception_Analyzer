@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 import { AnalysisResult, RiskLevel } from "./interfaces/HoverInfo";
 
+let hoverProviderDisposable: vscode.Disposable | undefined;
+
 function severityToColor(riskLevel: RiskLevel): string {
   switch (riskLevel) {
     case RiskLevel.HIGH:
@@ -31,13 +33,20 @@ export function applyUnderline(hoverInfo: AnalysisResult) {
 }
 
 export function applyHover(hoverInfo: AnalysisResult) {
-  vscode.languages.registerHoverProvider("java", {
+  // Dispose of previous hover
+  if (hoverProviderDisposable) {
+    hoverProviderDisposable.dispose();
+  }
+
+  // Register a new hover provider
+  hoverProviderDisposable = vscode.languages.registerHoverProvider("java", {
     provideHover(document, position, token) {
       const start = new vscode.Position(hoverInfo.startLine, hoverInfo.startChar);
       const end = new vscode.Position(hoverInfo.endLine, hoverInfo.endChar);
       const vscodeRange = new vscode.Range(start, end);
       if (vscodeRange.contains(position)) {
-        return new vscode.Hover(hoverInfo.message, vscodeRange);
+        const hoverMessage = new vscode.MarkdownString(`**${hoverInfo.message}**\n\n${hoverInfo.suggestion}`);
+        return new vscode.Hover(hoverMessage, vscodeRange);
       }
     },
   });

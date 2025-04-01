@@ -19,12 +19,8 @@
         "title": "Hello World"
       },
       {
-        "command": "vscode-extension.underlineText",
-        "title": "underline"
-      },
-      {
-        "command": "vscode-extension.asdf",
-        "title": "asdf"
+        "command": "vscode-extension.analyzeJava",
+        "title": "Analyze Java"
       }
     ]
   },

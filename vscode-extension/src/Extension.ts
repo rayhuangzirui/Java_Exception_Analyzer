@@ -4,16 +4,12 @@ import * as vscode from "vscode";
 import { ExtensionContext } from "vscode";
 import { applyHover, applyUnderline } from "./Highlight";
 import { AnalysisResult } from "./interfaces/HoverInfo";
-import { parseAnalysisResults } from "./interfaces/ParseAnalysisResult";
-import path = require("path");
+import { parseAnalysisResults, runJavaAnalyzer } from "./interfaces/ParseAnalysisResult";
+import * as path from "path";
 
 export function activate(context: ExtensionContext) {
   registerHello(context);
-
-  const filePath = path.join(context.extensionPath, "..", "resources", "analysis-output", "output.json");
-  const analysisResults = parseAnalysisResults(filePath);
-
-  registerUnderline(context, analysisResults);
+  registerAnalyzeJava(context);
 }
 
 export function registerHello(context: ExtensionContext) {
@@ -23,12 +19,30 @@ export function registerHello(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-export function registerUnderline(context: ExtensionContext, analysisResults: AnalysisResult[]) {
-  let disposable = vscode.commands.registerCommand("vscode-extension.underlineText", () => {
+export function registerAnalyzeJava(context: ExtensionContext) {
+  let disposable = vscode.commands.registerCommand("vscode-extension.analyzeJava", async () => {
+    // 1. Get current file
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showInformationMessage("No active editor found.");
+      return;
+    }
+    const filePath = editor.document.uri.fsPath;
+    if (!filePath.endsWith('.java')) {
+        vscode.window.showErrorMessage('Please open a Java file.');
+        return;
+    }
+
+    // 2. Run the Java analyzer
+    const outputJsonPath = path.join(context.extensionPath, "..", "resources", "analysis-output", "output.json");
+    const analysisResults = await runJavaAnalyzer(filePath, outputJsonPath, context);
+
+    // 3. Apply underlining and hover information
     for (const analysisResult of analysisResults) {
       applyUnderline(analysisResult);
       applyHover(analysisResult);
     }
+    vscode.window.showInformationMessage("Java analysis completed.");
   });
 
   context.subscriptions.push(disposable);
