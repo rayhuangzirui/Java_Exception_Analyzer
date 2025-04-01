@@ -39,6 +39,7 @@
   },
   "keywords": [],
   "author": "",
+  "publisher": "cpsc410-2024w-t2",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.13.13",

@@ -40,13 +40,14 @@ export async function runJavaAnalyzer(inputFilePath: string, outputJsonPath: str
   // Path to the Java analyzer JAR file (adjust this path as needed)
   // const jarPath = path.join(__dirname, "..", "..", "java-analyzer", "target", "java-analyzer.jar");
   const jarPath = path.join(context.extensionPath, "src/jars/java-analyzer.jar");
+  const libPath = path.join(context.extensionPath, "src/jars/lib/*");
   const jarDependencies = [
     path.join(context.extensionPath, "src/jars/lib/javaparser-core-3.26.3.jar"), 
     path.join(context.extensionPath, "src/jars/lib/gson-2.12.1.jar")
   ].join(":");
 
   return new Promise((resolve, reject) => {
-  execFile("java", ["-cp", `${jarPath}:${jarDependencies}`, 'Main', inputFilePath], (error, stdout, stderr) => {
+  execFile("java", ["-cp", `${jarPath}${path.delimiter}${libPath}`, 'Main', inputFilePath], (error, stdout, stderr) => {
     if (error) {
       vscode.window.showErrorMessage(`Error: ${error.message}`);
       reject(error);
