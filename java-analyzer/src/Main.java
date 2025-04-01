@@ -24,16 +24,15 @@ public class Main {
             CompilationUnit cu = StaticJavaParser.parse(file);
             List<AnalysisResult> results = getAnalysisResults(cu);
 
-            Path outputPath = Path.of("output.json");
-            if (results.isEmpty()) {
-                System.out.println("No issues found.");
-            } else {
-                System.out.println("Issues found. Check output.json for details.");
+            if (!results.isEmpty()) {
                 System.out.println(AnalysisResult.toJsonArray(results));
             }
-            try (FileWriter writer = new FileWriter(outputPath.toFile())) {
-                writer.write(AnalysisResult.toJsonArray(results));
-            }
+
+            // Don't write to file, or else vs-code extension will not work
+            // Path outputPath = Path.of("output.json");
+            // try (FileWriter writer = new FileWriter(outputPath.toFile())) {
+            //     writer.write(AnalysisResult.toJsonArray(results));
+            // }
         } catch (Exception e) {
             System.err.println("Analysis failed: " + e.getMessage());
             e.printStackTrace();

@@ -1,26 +1,116 @@
 // This is the entry point for extension logic
 
+import * as path from "path";
 import * as vscode from "vscode";
 import { ExtensionContext } from "vscode";
 import { applyHover, applyUnderline } from "./Highlight";
-import { mockHoverInfo } from "./resources/mockHoverInfo";
+import { runJavaAnalyzer } from "./interfaces/ParseAnalysisResult";
+import * as fs from "fs";
+
+let globalContext: ExtensionContext;
 
 export function activate(context: ExtensionContext) {
-  sayHello(context);
-  underline(context);
+  globalContext = context;
+  getConfig();
+  registerHello(context);
+  registerOpenConfigFile(context);
+  registerResetConfig(context);
+  registerAnalyzeJava(context);
 }
 
-export function sayHello(context: ExtensionContext) {
-  let disposable = vscode.commands.registerCommand("vscode-extension.sayHello", () => {
-    vscode.window.showInformationMessage("Is this compiling? 2");
+function getConfigPath() {
+  const configPath = path.join(globalContext.globalStorageUri.fsPath, "config.json");
+  return configPath;
+}
+
+function getDefaultConfigPath() {
+  const defaultConfigPath = path.join(globalContext.extensionPath, "src", "default-config.json");
+  return defaultConfigPath;
+}
+
+function initConfig() {
+  const configPath = getConfigPath();
+  const defaultConfigPath = getDefaultConfigPath();
+
+  // Create config directoy it it idoesn't exist
+  if (!fs.existsSync(globalContext.globalStorageUri.fsPath)) {
+    fs.mkdirSync(globalContext.globalStorageUri.fsPath, { recursive: true });
+  }
+
+  // Create the config file if it doesn’t exist
+  if (!fs.existsSync(configPath)) {
+    fs.copyFileSync(defaultConfigPath, configPath);
+  }
+}
+
+export function getConfig() {
+  const configPath = getConfigPath();
+  const defaultConfigPath = getDefaultConfigPath();
+  try {
+    initConfig();
+    const rawConfig = fs.readFileSync(configPath, "utf8");
+    const config = JSON.parse(rawConfig);
+    return config;
+  } catch (error) {
+    vscode.window.showErrorMessage("Error parsing config.json. Using default values");
+    const rawConfig = fs.readFileSync(defaultConfigPath, "utf8");
+    const config = JSON.parse(rawConfig);
+    return config;
+  }
+}
+
+export async function registerOpenConfigFile(context: ExtensionContext) {
+  const configPath = getConfigPath();
+  const defaultConfigPath = getDefaultConfigPath();
+  let disposable = vscode.commands.registerCommand("vscode-extension.configJavaAnalyzer", async () => {
+    initConfig();
+    const document = await vscode.workspace.openTextDocument(configPath);
+    vscode.window.showTextDocument(document);
   });
   context.subscriptions.push(disposable);
 }
 
-export function underline(context: ExtensionContext) {
-  let disposable = vscode.commands.registerCommand("vscode-extension.underlineText", () => {
-    applyUnderline(mockHoverInfo);
-    applyHover(mockHoverInfo);
+export async function registerResetConfig(context: ExtensionContext) {
+  const configPath = path.join(context.globalStorageUri.fsPath, "config.json");
+  const defaultConfigPath = path.join(context.extensionPath, "src", "default-config.json");
+  let disposable = vscode.commands.registerCommand("vscode-extension.configReset", async () => {
+    initConfig();
+    fs.copyFileSync(defaultConfigPath, configPath);
+  });
+  context.subscriptions.push(disposable);
+}
+
+export function registerHello(context: ExtensionContext) {
+  let disposable = vscode.commands.registerCommand("vscode-extension.sayHello", () => {
+    vscode.window.showInformationMessage("Hello World!");
+  });
+  context.subscriptions.push(disposable);
+}
+
+export function registerAnalyzeJava(context: ExtensionContext) {
+  let disposable = vscode.commands.registerCommand("vscode-extension.analyzeJava", async () => {
+    // 1. Get current file
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showInformationMessage("No active editor found.");
+      return;
+    }
+    const filePath = editor.document.uri.fsPath;
+    if (!filePath.endsWith(".java")) {
+      vscode.window.showErrorMessage("Please open a Java file.");
+      return;
+    }
+
+    // 2. Run the Java analyzer
+    const outputJsonPath = path.join(context.extensionPath, "..", "resources", "analysis-output", "output.json");
+    const analysisResults = await runJavaAnalyzer(filePath, outputJsonPath, context);
+
+    // 3. Apply underlining and hover information
+    for (const analysisResult of analysisResults) {
+      applyUnderline(analysisResult);
+      applyHover(analysisResult);
+    }
+    vscode.window.showInformationMessage("Java analysis completed.");
   });
 
   context.subscriptions.push(disposable);
