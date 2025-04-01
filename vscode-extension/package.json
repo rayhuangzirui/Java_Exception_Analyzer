@@ -21,6 +21,14 @@
       {
         "command": "vscode-extension.analyzeJava",
         "title": "Analyze Java"
+      },
+      {
+        "command": "vscode-extension.configJavaAnalyzer",
+        "title": "Configure Java Analyzer"
+      },
+      {
+        "command": "vscode-extension.configReset",
+        "title": "Reset Config for Java Analyzer"
       }
     ]
   },

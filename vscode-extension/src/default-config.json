@@ -1,0 +1,18 @@
+{
+  "risk-levels": {
+    "ALWAYS_TRIGGERED_CATCH": "HIGH",
+    "EMPTY_CATCH": "HIGH",
+    "EXCEPTION_PROPAGATION": "LOW",
+    "LOOP_TRY_CATCH": "MEDIUM",
+    "REUNDANT_TRY_CATCH": "MEDIUM",
+    "SYSTEM_ERROR_IN_CATCH": "MEDIUM",
+    "UNCLOSED_RESOURCE": "HIGH",
+    "UNDECLARED_EXCEPTION": "MEDIUM",
+    "UNHANDLED_EXCEPTION": "MEDIUM"
+  },
+  "risk-colors": {
+    "LOW": "red",
+    "MEDIUM": "yellow",
+    "HIGH": "#5b8beb"
+  }
+}

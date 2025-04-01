@@ -1,9 +1,24 @@
 import * as vscode from "vscode";
-import { AnalysisResult, RiskLevel } from "./interfaces/HoverInfo";
+import { AnalysisResult, Code, RiskLevel } from "./interfaces/HoverInfo";
+import { getConfig } from "./Extension";
 
 let hoverProviderDisposable: vscode.Disposable | undefined;
 
+function resultToRiskLevel(result: AnalysisResult) {
+  const config = getConfig();
+  const severityOverride = config?.["risk-levels"]?.[result.errorCode];
+  if (severityOverride) {
+    return severityOverride;
+  }
+  return result.riskLevel;
+}
+
 function severityToColor(riskLevel: RiskLevel): string {
+  const config = getConfig();
+  const colorOverride = config?.["risk-colors"]?.[riskLevel];
+  if (colorOverride) {
+    return colorOverride;
+  }
   switch (riskLevel) {
     case RiskLevel.HIGH:
       return "red";
@@ -16,7 +31,8 @@ function severityToColor(riskLevel: RiskLevel): string {
 
 export function applyUnderline(hoverInfo: AnalysisResult) {
   let decorations: vscode.DecorationOptions[] = [];
-  const color = severityToColor(hoverInfo.riskLevel);
+  const riskLevel = resultToRiskLevel(hoverInfo);
+  const color = severityToColor(riskLevel);
   const underlineDecoration = vscode.window.createTextEditorDecorationType({
     textDecoration: `underline wavy ${color}`,
   });
