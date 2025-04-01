@@ -26,8 +26,9 @@ public class EmptyCatchTest {
             String code = Files.readString(Path.of(path));
             System.out.println("Code: " + code);
             CatchClause cc = getFirstCatchClause(code);
+            CompilationUnit cu = StaticJavaParser.parse(code);
             System.out.println("Issue: " + cc);
-            List<AnalysisResult> results = analyze(cc);
+            List<AnalysisResult> results = analyze(cu);
 
             assertEquals(1, results.size());
             assertEquals("EMPTY_CATCH", results.get(0).errorCode());
@@ -52,10 +53,10 @@ public class EmptyCatchTest {
         return catchClause.orElseThrow();
     }
 
-    private List<AnalysisResult> analyze(CatchClause cc) {
+    private List<AnalysisResult> analyze(CompilationUnit cu) {
         EmptyCatch analyzer = new EmptyCatch();
         List<AnalysisResult> results = new ArrayList<>();
-        analyzer.visit(cc, results);
+        analyzer.analyze(cu, results);
         return results;
     }
 

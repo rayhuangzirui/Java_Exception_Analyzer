@@ -34,6 +34,7 @@ public class ExceptionPropagation extends BaseAnalyzer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(ThrowStmt throwStmt, List<AnalysisResult> results) {
         super.visit(throwStmt, results);
 

@@ -63,7 +63,7 @@ public class AlwaysTriggeredCatchTest {
             System.out.println("Code: " + code);
             CompilationUnit cu = StaticJavaParser.parse(code);
             List<AnalysisResult> results = analyze(cu);
-
+            System.out.println("Issue: " + results);
             assertEquals(0, results.size());
         } catch (IOException e) {
             e.printStackTrace();
@@ -79,7 +79,7 @@ public class AlwaysTriggeredCatchTest {
     private List<AnalysisResult> analyze(CompilationUnit cu) {
         AlwaysTriggeredCatch analyzer = new AlwaysTriggeredCatch();
         List<AnalysisResult> results = new ArrayList<>();
-        analyzer.visit(cu, results);
+        analyzer.analyze(cu, results);
         return results;
     }
 }
