@@ -1,12 +1,17 @@
 {
   "name": "vscode-extension",
+  "displayName": "Java Analyzer",
   "version": "1.0.0",
   "description": "",
   "main": "out/Extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.students.cs.ubc.ca/CPSC410-2024W-T2/Group12Project2"
+  },
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "package": "vsce package"
+    "package": "tsc -p ./ && vsce package"
   },
   "engines": {
     "vscode": "^1.98.0"
