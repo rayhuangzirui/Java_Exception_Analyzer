@@ -3,7 +3,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { ExtensionContext } from "vscode";
-import { applyHover, applyUnderline } from "./Highlight";
+import { applyHovers, applyUnderlines } from "./Highlight";
 import { runJavaAnalyzer } from "./interfaces/ParseAnalysisResult";
 import * as fs from "fs";
 
@@ -87,33 +87,60 @@ export function registerHello(context: ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+async function analyzeJavaFile() {
+  // Get current file
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showInformationMessage("No active editor found.");
+    return;
+  }
+  const filePath = editor.document.uri.fsPath;
+  if (!filePath.endsWith(".java")) {
+    vscode.window.showErrorMessage("Please open a Java file.");
+    return;
+  }
+  if (!filePath.endsWith(".java")) {
+    vscode.window.showErrorMessage("Please open a Java file.");
+    return;
+  }
+
+  // Run the Java analyzer
+  const outputJsonPath = path.join(globalContext.extensionPath, "..", "resources", "analysis-output", "output.json");
+  const analysisResults = await runJavaAnalyzer(filePath, outputJsonPath, globalContext);
+
+  // Apply underlining and hover information
+  applyHovers(analysisResults);
+  applyUnderlines(analysisResults);
+  vscode.window.showInformationMessage("Java analysis completed.");
+}
+
 export function registerAnalyzeJava(context: ExtensionContext) {
   let disposable = vscode.commands.registerCommand("vscode-extension.analyzeJava", async () => {
-    // 1. Get current file
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      vscode.window.showInformationMessage("No active editor found.");
-      return;
-    }
-    const filePath = editor.document.uri.fsPath;
-    if (!filePath.endsWith(".java")) {
-      vscode.window.showErrorMessage("Please open a Java file.");
-      return;
-    }
-
-    // 2. Run the Java analyzer
-    const outputJsonPath = path.join(context.extensionPath, "..", "resources", "analysis-output", "output.json");
-    const analysisResults = await runJavaAnalyzer(filePath, outputJsonPath, context);
-
-    // 3. Apply underlining and hover information
-    for (const analysisResult of analysisResults) {
-      applyUnderline(analysisResult);
-      applyHover(analysisResult);
-    }
-    vscode.window.showInformationMessage("Java analysis completed.");
+    await analyzeJavaFile();
   });
-
   context.subscriptions.push(disposable);
+
+  // Trigger analysis when a Java file is opened
+  vscode.workspace.onDidOpenTextDocument(
+    (document) => {
+      if (document.languageId === "java") {
+        analyzeJavaFile();
+      }
+    },
+    null,
+    context.subscriptions
+  );
+
+  // Trigger analysis when a Java file is modified
+  vscode.workspace.onDidChangeTextDocument(
+    (event) => {
+      if (event.document.languageId === "java") {
+        analyzeJavaFile();
+      }
+    },
+    null,
+    context.subscriptions
+  );
 }
 
 export function deactivate() {}

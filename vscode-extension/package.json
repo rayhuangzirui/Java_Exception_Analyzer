@@ -16,7 +16,10 @@
   "engines": {
     "vscode": "^1.98.0"
   },
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:java",
+    "onStartupFinished"
+  ],
   "contributes": {
     "commands": [
       {

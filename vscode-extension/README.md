@@ -13,7 +13,9 @@ npm run package
 ```
 code --install-extension vscode-extension-1.0.0.vsix
 ```
-Note you will need to restart VSCode for changes to take effect
+Note you will need to restart VSCode for changes to take effect. To run the extension, open the command pallette. Supported commands include:
+* Analyze Java
+* Configure Java Analyzer
 
 ## Uninstall the extension
 ```
