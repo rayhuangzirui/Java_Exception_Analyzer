@@ -41,17 +41,17 @@ export function applyUnderlines(results: AnalysisResult[]) {
   }
 }
 
-function applyUnderline(hoverInfo: AnalysisResult) {
+function applyUnderline(result: AnalysisResult) {
   let decorations: vscode.DecorationOptions[] = [];
-  const riskLevel = resultToRiskLevel(hoverInfo);
+  const riskLevel = resultToRiskLevel(result);
   const color = severityToColor(riskLevel);
   const underlineDecoration = vscode.window.createTextEditorDecorationType({
     textDecoration: `underline wavy ${color}`,
   });
   underlineDecorations.push(underlineDecoration);
 
-  const start = new vscode.Position(hoverInfo.startLine, hoverInfo.startChar);
-  const end = new vscode.Position(hoverInfo.endLine, hoverInfo.endChar);
+  const start = new vscode.Position(result.startLine - 1, result.startChar - 1);
+  const end = new vscode.Position(result.endLine - 1, result.endChar - 1);
   const decoration = { range: new vscode.Range(start, end) };
   decorations.push(decoration);
 
@@ -77,8 +77,8 @@ function makeHoverDisposable(result: AnalysisResult) {
   // Register a new hover provider
   return vscode.languages.registerHoverProvider("java", {
     provideHover(document, position, token) {
-      const start = new vscode.Position(result.startLine, result.startChar);
-      const end = new vscode.Position(result.endLine, result.endChar);
+      const start = new vscode.Position(result.startLine - 1, result.startChar - 1);
+      const end = new vscode.Position(result.endLine - 1, result.endChar - 1);
       const vscodeRange = new vscode.Range(start, end);
       if (vscodeRange.contains(position)) {
         const hoverMessage = new vscode.MarkdownString(`**${result.message}**\n\n${result.suggestion}`);
