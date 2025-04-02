@@ -10,7 +10,14 @@ npm run package
 ```
 code --install-extension vscode-extension-1.0.0.vsix
 ```
-Note you will need to restart VSCode for changes to take effect. To run the extension, open the command pallette. Supported commands include:
+- Make sure to check the extension is installed by running the following command:
+```
+// You should see cpsc410-2024w-t2.vscode-extension in the list
+code --list-extensions
+```
+
+- Note you will need to restart VSCode for changes to take effect. 
+To run the extension, open the command pallette. Supported commands include:
 * Analyze Java
 * Configure Java Analyzer
 
@@ -21,7 +28,7 @@ You can run the extension by opening the command pallette and running the follow
 
 ## Uninstall the extension
 ```
-code --uninstall-extension undefined_publisher.vscode-extension
+code --uninstall-extension cpsc410-2024w-t2.vscode-extension
 ```
 
 ## Installation FAQ
