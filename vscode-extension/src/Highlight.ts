@@ -3,6 +3,7 @@ import { AnalysisResult, Code, RiskLevel } from "./interfaces/HoverInfo";
 import { getConfig } from "./Extension";
 
 let hoverProvidersDisposable: vscode.Disposable[] = [];
+let underlineDecorations: vscode.TextEditorDecorationType[] = [];
 
 function resultToRiskLevel(result: AnalysisResult) {
   const config = getConfig();
@@ -29,13 +30,25 @@ function severityToColor(riskLevel: RiskLevel): string {
   }
 }
 
-export function applyUnderline(hoverInfo: AnalysisResult) {
+export function applyUnderlines(results: AnalysisResult[]) {
+  for (const decoration of underlineDecorations) {
+    decoration.dispose();
+  }
+  underlineDecorations = [];
+
+  for (const result of results) {
+    applyUnderline(result);
+  }
+}
+
+function applyUnderline(hoverInfo: AnalysisResult) {
   let decorations: vscode.DecorationOptions[] = [];
   const riskLevel = resultToRiskLevel(hoverInfo);
   const color = severityToColor(riskLevel);
   const underlineDecoration = vscode.window.createTextEditorDecorationType({
     textDecoration: `underline wavy ${color}`,
   });
+  underlineDecorations.push(underlineDecoration);
 
   const start = new vscode.Position(hoverInfo.startLine, hoverInfo.startChar);
   const end = new vscode.Position(hoverInfo.endLine, hoverInfo.endChar);
@@ -58,7 +71,6 @@ export function applyHovers(results: AnalysisResult[]) {
     const hoverProvider = makeHoverDisposable(result);
     hoverProvidersDisposable.push(hoverProvider);
   }
-  console.log(hoverProvidersDisposable.length)
 }
 
 function makeHoverDisposable(result: AnalysisResult) {

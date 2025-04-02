@@ -3,7 +3,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { ExtensionContext } from "vscode";
-import { applyHovers, applyUnderline } from "./Highlight";
+import { applyHovers, applyUnderlines } from "./Highlight";
 import { runJavaAnalyzer } from "./interfaces/ParseAnalysisResult";
 import * as fs from "fs";
 
@@ -110,9 +110,7 @@ async function analyzeJavaFile() {
 
   // Apply underlining and hover information
   applyHovers(analysisResults);
-  for (const analysisResult of analysisResults) {
-    applyUnderline(analysisResult);
-  }
+  applyUnderlines(analysisResults);
   vscode.window.showInformationMessage("Java analysis completed.");
 }
 
