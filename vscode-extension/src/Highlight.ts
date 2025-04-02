@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { AnalysisResult, Code, RiskLevel } from "./interfaces/HoverInfo";
 import { getConfig } from "./Extension";
 
-let hoverProviderDisposable: vscode.Disposable | undefined;
+let hoverProvidersDisposable: vscode.Disposable[] = [];
 
 function resultToRiskLevel(result: AnalysisResult) {
   const config = getConfig();
@@ -48,20 +48,28 @@ export function applyUnderline(hoverInfo: AnalysisResult) {
   }
 }
 
-export function applyHover(hoverInfo: AnalysisResult) {
-  // Dispose of previous hover
-  if (hoverProviderDisposable) {
-    hoverProviderDisposable.dispose();
+export function applyHovers(results: AnalysisResult[]) {
+  for (const provider of hoverProvidersDisposable) {
+    provider.dispose();
   }
+  hoverProvidersDisposable = [];
 
+  for (const result of results) {
+    const hoverProvider = makeHoverDisposable(result);
+    hoverProvidersDisposable.push(hoverProvider);
+  }
+  console.log(hoverProvidersDisposable.length)
+}
+
+function makeHoverDisposable(result: AnalysisResult) {
   // Register a new hover provider
-  hoverProviderDisposable = vscode.languages.registerHoverProvider("java", {
+  return vscode.languages.registerHoverProvider("java", {
     provideHover(document, position, token) {
-      const start = new vscode.Position(hoverInfo.startLine, hoverInfo.startChar);
-      const end = new vscode.Position(hoverInfo.endLine, hoverInfo.endChar);
+      const start = new vscode.Position(result.startLine, result.startChar);
+      const end = new vscode.Position(result.endLine, result.endChar);
       const vscodeRange = new vscode.Range(start, end);
       if (vscodeRange.contains(position)) {
-        const hoverMessage = new vscode.MarkdownString(`**${hoverInfo.message}**\n\n${hoverInfo.suggestion}`);
+        const hoverMessage = new vscode.MarkdownString(`**${result.message}**\n\n${result.suggestion}`);
         return new vscode.Hover(hoverMessage, vscodeRange);
       }
     },
