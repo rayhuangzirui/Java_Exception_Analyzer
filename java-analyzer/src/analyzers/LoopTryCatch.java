@@ -13,7 +13,7 @@ public class LoopTryCatch extends BaseAnalyzer {
     private static final String ERROR_MESSAGE = "Try-catch block inside a loop detected";
     private static final String SUGGESTION = """
             Consider refactoring your code to move the try-catch block outside the loop,
-            or handle exceptions differently to avoid potential expenseve performance issues caused by 
+            or handle exceptions differently to avoid potential expensive performance issues caused by 
             exception-based control flow inside loops.
             """;
     private static final RiskLevel RISK_LEVEL = RiskLevel.MEDIUM;
