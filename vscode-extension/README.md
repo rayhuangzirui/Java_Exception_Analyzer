@@ -3,8 +3,8 @@
 ## Environment for installation
 - Make sure you have the following installed:
     - VSCode (v1.98.0 or later)
-    - Node.js (v22.13.13 or later)
-    - npm (11.2.0 or later)
+    - Node.js (v18 or later)
+    - npm (or yarn)
 
 
 ## Build the extension:
@@ -18,12 +18,12 @@ code --install-extension vscode-extension-1.0.0.vsix
 ```
 - Make sure to check the extension is installed by running the following command:
 ```
-// You should see cpsc410-2024w-t2.vscode-extension in the list
+// You should see rayhuangzirui.vscode-extension in the list
 code --list-extensions
 ```
 
-- Note you will need to restart VSCode for changes to take effect. 
-To run the extension, open the command palette. Supported commands include:
+- Note you will need to restart VSCode for changes to take effect.
+  To run the extension, open the command palette. Supported commands include:
 * Analyze Java
 * Configure Java Analyzer
 
@@ -34,7 +34,7 @@ You can run the extension by opening the command palette and running the followi
 
 ## Uninstall the extension
 ```
-code --uninstall-extension cpsc410-2024w-t2.vscode-extension
+code --uninstall-extension rayhuangzirui.vscode-extension
 ```
 
 ## Installation FAQ
