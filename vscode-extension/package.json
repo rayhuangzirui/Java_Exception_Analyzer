@@ -1,6 +1,6 @@
 {
   "name": "vscode-extension",
-  "displayName": "Java Exception Analyzer",
+  "displayName": "Java Analyzer",
   "version": "1.0.0",
   "description": "",
   "main": "out/Extension.js",
