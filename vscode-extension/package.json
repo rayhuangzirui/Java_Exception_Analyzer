@@ -4,10 +4,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "out/Extension.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.students.cs.ubc.ca/CPSC410-2024W-T2/Group12Project2"
-  },
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
@@ -42,7 +38,7 @@
   },
   "keywords": [],
   "author": "",
-  "publisher": "cpsc410-2024w-t2",
+  "publisher": "rayhuangzirui",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.13.13",
